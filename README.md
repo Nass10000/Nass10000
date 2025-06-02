@@ -28,5 +28,4 @@ Thunder Client · Postman · Git
 - Email 2: [wessinnassim@gmail.com](mailto:wessinnassim@gmail.com)  
 - Cel: 809-769-1130  
 - LinkedIn: [linkedin.com/in/nassim-wessin-03666b18a](https://www.linkedin.com/in/nassim-wessin-03666b18a)  
-- Portafolio (en proceso): [nass90100.github.io/nassimwessin.github.io](https://nass90100.github.io/nassimwessin.github.io/)  
 - GitHub: [github.com/Nass10000](https://github.com/Nass10000)  
