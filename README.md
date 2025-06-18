@@ -1,4 +1,4 @@
-# 👋 Hola, soy Nassim
+#  Hola, soy Nassim
 
 Desarrollador Web Full Stack enfocado en backend, especializado en NestJS, PostgreSQL y TypeORM, junto a tecnologías modernas del ecosistema web.
 
