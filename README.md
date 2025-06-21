@@ -3,13 +3,8 @@
 Desarrollador Web Full Stack enfocado en backend, especializado en NestJS, PostgreSQL y TypeORM, junto a tecnologías modernas del ecosistema web.
 
 ## Tecnologías y herramientas (entre otras)
-NestJS · TypeScript · Node.js  
-PostgreSQL · TypeORM · DTOs · Migrations  
-JWT · Guards · Roles · Autenticación  
-Swagger (documentación de APIs)  
-Cloudinary (subida de imágenes)  
-Testing: Jest · Supertest  
-Thunder Client · Postman · Git  
+![image](https://github.com/user-attachments/assets/f2d8fd6e-498b-4ba4-ba42-8b7769f6aa36)
+
 
 ## Proyecto destacado: E-commerce Backend
 - CRUD completo de usuarios y productos  
