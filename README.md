@@ -2,7 +2,7 @@
 
 Desarrollador Web Full Stack enfocado en backend, especializado en NestJS, PostgreSQL y TypeORM, junto a tecnologías modernas del ecosistema web.
 
-## Tecnologías y herramientas (entre otras)
+## Tecnologías y herramientas
 ![image](https://github.com/user-attachments/assets/f2d8fd6e-498b-4ba4-ba42-8b7769f6aa36)
 
 
