@@ -4,8 +4,7 @@ Desarrollador Web Full Stack enfocado en backend, especializado en NestJS, Postg
 
 ## Tecnologías y herramientas
 ![image](https://github.com/user-attachments/assets/f2d8fd6e-498b-4ba4-ba42-8b7769f6aa36)
-
-
+<img width="1024" height="1024" alt="ChatGPT Image 14 jul 2025, 06_01_56 p m" src="https://github.com/user-attachments/assets/73675dd6-491c-480e-9dcf-36254b1d35d2" />
 ## Proyecto destacado: E-commerce Backend
 - CRUD completo de usuarios y productos  
 - Autenticación con JWT y control de acceso por roles  
