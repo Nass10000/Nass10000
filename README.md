@@ -23,3 +23,6 @@ Desarrollador Web Full Stack enfocado en backend, especializado en NestJS, Postg
 - Cel: 809-769-1130  
 - LinkedIn: [linkedin.com/in/nassim-wessin-03666b18a](https://www.linkedin.com/in/nassim-wessin-03666b18a)  
 - GitHub: [github.com/Nass10000](https://github.com/Nass10000)  
+
+Recuperación de Repositorio anterior:
+https://github.com/Nass10000/repositorio-recuperado
