@@ -6,7 +6,7 @@ Desarrollador Web Full Stack enfocado en backend, especializado en NestJS, Postg
 <img 
   src="https://github.com/user-attachments/assets/f2d8fd6e-498b-4ba4-ba42-8b7769f6aa36"  
   alt="Banner de mi proyecto"                                                            
-  width="600"                                                                            
+  width="100"                                                                            
 />
 <img width="100" height="100" alt="image" src="https://github.com/user-attachments/assets/772d73ed-54ed-47b1-bf32-2c26e7f2dabc" />
 <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/1c7e9065-5a6c-40cf-84b1-be74401c024c" />
