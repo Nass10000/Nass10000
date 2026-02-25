@@ -1,4 +1,4 @@
-Hola, soy Nassim 👋
+Hola, soy Nassim 
 
 Desarrollador Web Full Stack enfocado en backend y en formación activa en Ciencia de Datos. Especializado en NestJS, PostgreSQL y TypeORM, con competencias en Data Warehousing, ETL, Business Intelligence y Power BI. Actualmente trabajando como programador en Grupo de Consultoría Henca.
 
