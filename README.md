@@ -192,7 +192,7 @@ Módulos de Ciencia de Datos completados:
 💼 Actualmente trabajando como programador en Grupo de Consultoría Henca
 
 
-
+portafolio :https://nassimfolio-tlkpkfh4.manus.space/#contacto
 
 📬 Contacto
 
