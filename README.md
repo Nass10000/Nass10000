@@ -212,7 +212,7 @@ Módulos de Ciencia de Datos completados:
 🐙 GitHub: github.com/Nass10000
 
 
-PORTAFOLIO: portafolio :https://nassimfolio-tlkpkfh4.manus.space/#contacto
+PORTAFOLIO:https://nassimfolio-tlkpkfh4.manus.space/#contacto
 
 
 Recuperación de repositorio anterior: https://github.com/Nass10000/repositorio-recuperado
