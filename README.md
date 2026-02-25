@@ -192,7 +192,7 @@ Módulos de Ciencia de Datos completados:
 💼 Actualmente trabajando como programador en Grupo de Consultoría Henca
 
 
-portafolio :https://nassimfolio-tlkpkfh4.manus.space/#contacto
+
 
 📬 Contacto
 
@@ -212,7 +212,7 @@ portafolio :https://nassimfolio-tlkpkfh4.manus.space/#contacto
 🐙 GitHub: github.com/Nass10000
 
 
-
+PORTAFOLIO: portafolio :https://nassimfolio-tlkpkfh4.manus.space/#contacto
 
 
 Recuperación de repositorio anterior: https://github.com/Nass10000/repositorio-recuperado
