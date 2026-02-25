@@ -1,4 +1,4 @@
-Hola, soy Nassim 
+Hola, soy Nassim 👋
 
 Desarrollador Web Full Stack enfocado en backend y en formación activa en Ciencia de Datos. Especializado en NestJS, PostgreSQL y TypeORM, con competencias en Data Warehousing, ETL, Business Intelligence y Power BI. Actualmente trabajando como programador en Grupo de Consultoría Henca.
 
@@ -206,7 +206,7 @@ Módulos de Ciencia de Datos completados:
 📱 Cel: 809-769-1130
 
 •
-💼 LinkedIn: linkedin.com/in/nassim-wessin-03666b18a
+💼 LinkedIn: www.linkedin.com/in/nassim-wessin-03666b18a
 
 •
 🐙 GitHub: github.com/Nass10000
@@ -215,5 +215,5 @@ Módulos de Ciencia de Datos completados:
 
 
 
-Recuperación de repositorio anterior: repositorio-recuperado
+Recuperación de repositorio anterior: https://github.com/Nass10000/repositorio-recuperado
 
