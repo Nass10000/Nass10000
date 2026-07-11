@@ -1,5 +1,5 @@
 name: Corregir ruta y publicar portafolio
-run-name: Corregir inicio, quitar sello de Manus y publicar
+run-name: Corregir Wouter, quitar sello de Manus y publicar
 
 on:
   push:
@@ -28,54 +28,44 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      - name: Corregir ruta base y eliminar sello de Manus
+      - name: Corregir base real del enrutador
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
 
           root = Path('portfolio')
           index_path = root / 'index.html'
+          bundle_path = root / 'assets/index-Dypqe6ft.js'
           patch_path = root / 'requested-changes.js'
 
+          bundle = bundle_path.read_text(encoding='utf-8')
+          old = 'Wv={hook:aw,searchHook:tw,parser:GA,base:"",ssrPath:void 0'
+          new = 'Wv={hook:aw,searchHook:tw,parser:GA,base:"/Nass10000",ssrPath:void 0'
+          if old not in bundle and new not in bundle:
+              raise SystemExit('No se encontró la configuración base de Wouter')
+          bundle = bundle.replace(old, new)
+          bundle_path.write_text(bundle, encoding='utf-8')
+
           html = index_path.read_text(encoding='utf-8')
-
-          html = html.replace(
-              'src="assets/index-Dypqe6ft.js"',
-              'src="/Nass10000/assets/index-Dypqe6ft.js"'
+          html = re.sub(
+              r'<script id="github-pages-route-fix">.*?</script>\s*',
+              '',
+              html,
+              flags=re.S,
           )
-          html = html.replace(
-              'href="assets/index-D49z4kK5.css"',
-              'href="/Nass10000/assets/index-D49z4kK5.css"'
-          )
-          html = html.replace(
-              'src="requested-changes.js"',
-              'src="/Nass10000/requested-changes.js"'
-          )
-
-          early_script = '''<script id="github-pages-route-fix">
-          (() => {
-            const projectPath = '/Nass10000/';
-            if (window.location.pathname === projectPath || window.location.pathname === '/Nass10000') {
-              window.__PORTFOLIO_PROJECT_PATH__ = projectPath;
-              window.history.replaceState(window.history.state, '', '/' + window.location.search + window.location.hash);
-            }
-          })();
-          </script>'''
-
-          if 'id="github-pages-route-fix"' not in html:
-              marker = '<script type="module" crossorigin'
-              html = html.replace(marker, early_script + '\n    ' + marker, 1)
-
+          html = html.replace('src="assets/index-Dypqe6ft.js"', 'src="/Nass10000/assets/index-Dypqe6ft.js"')
+          html = html.replace('href="assets/index-D49z4kK5.css"', 'href="/Nass10000/assets/index-D49z4kK5.css"')
+          html = html.replace('src="requested-changes.js"', 'src="/Nass10000/requested-changes.js"')
           index_path.write_text(html, encoding='utf-8')
 
           patch = r'''(() => {
-            const projectPath = '/Nass10000/';
             const replacements = new Map([
               ['30+', '70+'],
               ['Ciencia de Datos (en curso)', 'Ciencia de Datos (completado)']
             ]);
 
-            function applyTextChanges(root = document.body) {
+            function update(root = document.body) {
               if (!root) return;
               const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
               const nodes = [];
@@ -83,78 +73,37 @@ jobs:
 
               for (const node of nodes) {
                 if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.parentElement?.tagName)) continue;
-                const current = node.nodeValue || '';
-                let updated = current;
-                for (const [from, to] of replacements) {
-                  updated = updated.split(from).join(to);
-                }
-                if (updated !== current) node.nodeValue = updated;
+                let value = node.nodeValue || '';
+                for (const [from, to] of replacements) value = value.split(from).join(to);
+                node.nodeValue = value;
               }
-            }
 
-            function removeManusBadge() {
-              const elements = [...document.querySelectorAll('body *')];
-              for (const element of elements) {
+              for (const element of document.querySelectorAll('body *')) {
                 const text = (element.textContent || '').trim().toLowerCase();
-                if (text !== 'made with manus' && text !== 'create with manus' && text !== 'created with manus') continue;
-
-                let target = element.closest('a, button') || element;
-                let parent = target.parentElement;
-
-                while (parent && parent !== document.body) {
-                  const parentText = (parent.textContent || '').trim().toLowerCase();
-                  const style = window.getComputedStyle(parent);
-                  if (
-                    style.position === 'fixed' ||
-                    style.position === 'sticky' ||
-                    parentText === 'made with manus' ||
-                    parentText === 'create with manus' ||
-                    parentText === 'created with manus'
-                  ) {
-                    target = parent;
+                if (!['made with manus', 'create with manus', 'created with manus'].includes(text)) continue;
+                let target = element.closest('a,button') || element;
+                while (target.parentElement && target.parentElement !== document.body) {
+                  const style = getComputedStyle(target.parentElement);
+                  if (style.position === 'fixed' || style.position === 'sticky') {
+                    target = target.parentElement;
                     break;
                   }
-                  parent = parent.parentElement;
+                  target = target.parentElement;
                 }
-
                 target.style.setProperty('display', 'none', 'important');
-                target.setAttribute('aria-hidden', 'true');
               }
-            }
-
-            function restoreProjectUrl() {
-              if (!window.__PORTFOLIO_PROJECT_PATH__) return;
-              if (window.location.pathname !== '/') return;
-              window.history.replaceState(
-                window.history.state,
-                '',
-                projectPath + window.location.search + window.location.hash
-              );
-            }
-
-            function applyEverything() {
-              applyTextChanges();
-              removeManusBadge();
             }
 
             function start() {
-              applyEverything();
-
-              const observer = new MutationObserver(applyEverything);
+              update();
+              const observer = new MutationObserver(update);
               observer.observe(document.body, { childList: true, subtree: true });
-
-              window.setTimeout(restoreProjectUrl, 1200);
-              window.setTimeout(applyEverything, 1600);
-              window.setTimeout(() => observer.disconnect(), 30000);
+              setTimeout(() => observer.disconnect(), 30000);
             }
 
-            if (document.readyState === 'loading') {
-              document.addEventListener('DOMContentLoaded', start);
-            } else {
-              start();
-            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+            else start();
           })();'''
-
           patch_path.write_text(patch, encoding='utf-8')
           PY
 
@@ -162,8 +111,8 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add portfolio/index.html portfolio/requested-changes.js
-          git diff --cached --quiet || git commit -m 'Corregir ruta inicial y quitar sello de Manus'
+          git add portfolio/index.html portfolio/requested-changes.js portfolio/assets/index-Dypqe6ft.js
+          git diff --cached --quiet || git commit -m 'Corregir base Wouter para GitHub Pages'
           git push
 
       - name: Configurar GitHub Pages
