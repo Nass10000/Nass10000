@@ -1,5 +1,5 @@
-name: Corregir ruta y publicar portafolio
-run-name: Corregir Wouter, quitar sello de Manus y publicar
+name: Actualizar y publicar portafolio
+run-name: Actualizar perfil como científico de datos y publicar
 
 on:
   push:
@@ -28,91 +28,53 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      - name: Corregir base real del enrutador
+      - name: Actualizar contenido en el archivo principal
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
 
           root = Path('portfolio')
-          index_path = root / 'index.html'
           bundle_path = root / 'assets/index-Dypqe6ft.js'
-          patch_path = root / 'requested-changes.js'
-
           bundle = bundle_path.read_text(encoding='utf-8')
-          old = 'Wv={hook:aw,searchHook:tw,parser:GA,base:"",ssrPath:void 0'
-          new = 'Wv={hook:aw,searchHook:tw,parser:GA,base:"/Nass10000",ssrPath:void 0'
-          if old not in bundle and new not in bundle:
-              raise SystemExit('No se encontró la configuración base de Wouter')
-          bundle = bundle.replace(old, new)
-          bundle_path.write_text(bundle, encoding='utf-8')
 
-          html = index_path.read_text(encoding='utf-8')
-          html = re.sub(
-              r'<script id="github-pages-route-fix">.*?</script>\s*',
-              '',
-              html,
-              flags=re.S,
+          # Mantener la ruta base correcta para GitHub Pages.
+          bundle = bundle.replace(
+              'Wv={hook:aw,searchHook:tw,parser:GA,base:"",ssrPath:void 0',
+              'Wv={hook:aw,searchHook:tw,parser:GA,base:"/Nass10000",ssrPath:void 0'
           )
-          html = html.replace('src="assets/index-Dypqe6ft.js"', 'src="/Nass10000/assets/index-Dypqe6ft.js"')
-          html = html.replace('href="assets/index-D49z4kK5.css"', 'href="/Nass10000/assets/index-D49z4kK5.css"')
-          html = html.replace('src="requested-changes.js"', 'src="/Nass10000/requested-changes.js"')
-          index_path.write_text(html, encoding='utf-8')
 
-          patch = r'''(() => {
-            const replacements = new Map([
-              ['30+', '70+'],
-              ['Ciencia de Datos (en curso)', 'Ciencia de Datos (completado)']
-            ]);
+          # Cambios permanentes solicitados en el contenido original.
+          bundle = bundle.replace('30+', '70+')
+          bundle = bundle.replace(
+              'Ciencia de Datos (en curso)',
+              'Ciencia de Datos (completado)'
+          )
+          bundle = bundle.replace(
+              'En formación activa en Ciencia de Datos con competencias en Power BI, ETL y Data Warehousing.',
+              'Científico de Datos certificado, con competencias en Power BI, ETL y Data Warehousing.'
+          )
+          bundle = bundle.replace(
+              'En formación activa en Ciencia de Datos',
+              'Científico de Datos certificado'
+          )
 
-            function update(root = document.body) {
-              if (!root) return;
-              const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-              const nodes = [];
-              while (walker.nextNode()) nodes.push(walker.currentNode);
+          # Cubrir variaciones con espacios no separables o saltos internos.
+          bundle = re.sub(
+              r'En\s+formación\s+activa\s+en\s+Ciencia\s+de\s+Datos\s+con\s+competencias\s+en\s+Power\s+BI,\s*ETL\s+y\s+Data\s+Warehousing\.',
+              'Científico de Datos certificado, con competencias en Power BI, ETL y Data Warehousing.',
+              bundle
+          )
 
-              for (const node of nodes) {
-                if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.parentElement?.tagName)) continue;
-                let value = node.nodeValue || '';
-                for (const [from, to] of replacements) value = value.split(from).join(to);
-                node.nodeValue = value;
-              }
-
-              for (const element of document.querySelectorAll('body *')) {
-                const text = (element.textContent || '').trim().toLowerCase();
-                if (!['made with manus', 'create with manus', 'created with manus'].includes(text)) continue;
-                let target = element.closest('a,button') || element;
-                while (target.parentElement && target.parentElement !== document.body) {
-                  const style = getComputedStyle(target.parentElement);
-                  if (style.position === 'fixed' || style.position === 'sticky') {
-                    target = target.parentElement;
-                    break;
-                  }
-                  target = target.parentElement;
-                }
-                target.style.setProperty('display', 'none', 'important');
-              }
-            }
-
-            function start() {
-              update();
-              const observer = new MutationObserver(update);
-              observer.observe(document.body, { childList: true, subtree: true });
-              setTimeout(() => observer.disconnect(), 30000);
-            }
-
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
-            else start();
-          })();'''
-          patch_path.write_text(patch, encoding='utf-8')
+          bundle_path.write_text(bundle, encoding='utf-8')
           PY
 
-      - name: Guardar corrección
+      - name: Guardar cambios permanentes
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add portfolio/index.html portfolio/requested-changes.js portfolio/assets/index-Dypqe6ft.js
-          git diff --cached --quiet || git commit -m 'Corregir base Wouter para GitHub Pages'
+          git add portfolio/assets/index-Dypqe6ft.js
+          git diff --cached --quiet || git commit -m 'Actualizar perfil como científico de datos certificado'
           git push
 
       - name: Configurar GitHub Pages
@@ -120,11 +82,11 @@ jobs:
         with:
           enablement: true
 
-      - name: Subir sitio
+      - name: Subir sitio estático
         uses: actions/upload-pages-artifact@v3
         with:
           path: portfolio
 
-      - name: Publicar
+      - name: Publicar en GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
