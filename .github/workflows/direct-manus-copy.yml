@@ -1,0 +1,131 @@
+name: Publicar copia exacta de Manus
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/direct-manus-copy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Crear copia exacta
+        run: |
+          set -euo pipefail
+          rm -rf portfolio
+          mkdir -p portfolio/assets
+
+          cp source-site/index.html portfolio/index.html
+
+          curl --fail --location --retry 4 \
+            'https://nassimfolio-tlkpkfh4.manus.space/assets/index-Dypqe6ft.js' \
+            -o portfolio/assets/index-Dypqe6ft.js
+
+          curl --fail --location --retry 4 \
+            'https://nassimfolio-tlkpkfh4.manus.space/assets/index-D49z4kK5.css' \
+            -o portfolio/assets/index-D49z4kK5.css
+
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import urllib.request
+
+          root = Path('portfolio')
+          index = root / 'index.html'
+          js_path = root / 'assets/index-Dypqe6ft.js'
+          css_path = root / 'assets/index-D49z4kK5.css'
+
+          html = index.read_text(encoding='utf-8')
+          html = html.replace(
+              'https://nassimfolio-tlkpkfh4.manus.space/assets/index-Dypqe6ft.js',
+              'assets/index-Dypqe6ft.js'
+          ).replace(
+              'https://nassimfolio-tlkpkfh4.manus.space/assets/index-D49z4kK5.css',
+              'assets/index-D49z4kK5.css'
+          )
+
+          # Los únicos cambios de contenido solicitados.
+          js = js_path.read_text(encoding='utf-8')
+          js = js.replace('30+', '70+')
+          js = js.replace('Ciencia de Datos (en curso)', 'Ciencia de Datos (completado)')
+          js_path.write_text(js, encoding='utf-8')
+
+          # Respaldo preciso por si React genera esos textos después de cargar.
+          patch = r'''(() => {
+            const replacements = new Map([
+              ['30+', '70+'],
+              ['Ciencia de Datos (en curso)', 'Ciencia de Datos (completado)']
+            ]);
+
+            function apply(root = document.body) {
+              if (!root) return;
+              const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+              const nodes = [];
+              while (walker.nextNode()) nodes.push(walker.currentNode);
+              for (const node of nodes) {
+                const current = node.nodeValue || '';
+                let updated = current;
+                for (const [from, to] of replacements) {
+                  updated = updated.split(from).join(to);
+                }
+                if (updated !== current) node.nodeValue = updated;
+              }
+            }
+
+            function start() {
+              apply();
+              const observer = new MutationObserver(() => apply());
+              observer.observe(document.body, { childList: true, subtree: true });
+              setTimeout(() => observer.disconnect(), 15000);
+            }
+
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', start);
+            } else {
+              start();
+            }
+          })();'''
+          (root / 'requested-changes.js').write_text(patch, encoding='utf-8')
+
+          tag = '<script defer src="requested-changes.js"></script>'
+          if tag not in html:
+              html = html.replace('</body>', tag + '</body>')
+          index.write_text(html, encoding='utf-8')
+
+          # Descargar recursos adicionales que el bundle o CSS referencien.
+          combined = js + '\n' + css_path.read_text(encoding='utf-8')
+          asset_paths = set(re.findall(
+              r'(?:https://nassimfolio-tlkpkfh4\.manus\.space/|/)?(assets/[A-Za-z0-9_./-]+\.(?:png|jpe?g|webp|svg|gif|woff2?|ttf|otf))',
+              combined,
+              flags=re.I,
+          ))
+          for rel in sorted(asset_paths):
+              destination = root / rel
+              if destination.exists():
+                  continue
+              destination.parent.mkdir(parents=True, exist_ok=True)
+              url = 'https://nassimfolio-tlkpkfh4.manus.space/' + rel
+              try:
+                  urllib.request.urlretrieve(url, destination)
+                  print('Descargado:', rel)
+              except Exception as exc:
+                  print('Recurso externo conservado:', rel, exc)
+
+          (root / '.nojekyll').write_text('', encoding='utf-8')
+          PY
+
+      - name: Guardar la sustitución
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add portfolio
+          git diff --cached --quiet || git commit -m 'Usar copia exacta de Manus con 70 proyectos y certificación completada'
+          git push
