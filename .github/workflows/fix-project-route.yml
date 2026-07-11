@@ -1,5 +1,5 @@
 name: Actualizar y publicar portafolio
-run-name: Publicar versión nueva con formación completada
+run-name: Eliminar scope y publicar conocimientos completados
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      - name: Crear versión nueva del portafolio
+      - name: Crear versión sin conocimientos pendientes
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -36,73 +36,80 @@ jobs:
 
           root = Path('portfolio')
           source_bundle = root / 'assets/index-Dypqe6ft.js'
-          versioned_bundle = root / 'assets/index-portfolio-v4.js'
+          versioned_bundle = root / 'assets/index-portfolio-v5.js'
           index_path = root / 'index.html'
 
           bundle = source_bundle.read_text(encoding='utf-8')
 
-          pending = 'name:"Fundamentos de nube y ciencia de datos de producción",completed:!1'
-          completed = 'name:"Fundamentos de nube y ciencia de datos de producción",completed:!0'
-          bundle = bundle.replace(pending, completed, 1)
-
-          old_intro = (
-              'Soy un desarrollador dominicano apasionado por el código limpio y el aprendizaje continuo. '
-              'Mi enfoque está en construir sistemas escalables que resuelvan problemas reales de negocio.'
-          )
-          new_intro = (
-              'Soy un Desarrollador Web Full Stack y Científico de Datos dominicano, apasionado por el código limpio '
-              'y el aprendizaje continuo. Mi enfoque está en construir sistemas escalables y soluciones basadas en '
-              'datos que resuelvan problemas reales de negocio.'
+          # Ruta correcta de GitHub Pages.
+          bundle = bundle.replace(
+              'Wv={hook:aw,searchHook:tw,parser:GA,base:"",ssrPath:void 0',
+              'Wv={hook:aw,searchHook:tw,parser:GA,base:"/Nass10000",ssrPath:void 0'
           )
 
-          old_detail = (
-              'Actualmente combino mi experiencia en desarrollo Full Stack con mi formación en Ciencia de Datos, '
-              'lo que me permite abordar proyectos desde la arquitectura de datos hasta la implementación de APIs robustas.'
-          )
-          new_detail = (
-              'Combino mi experiencia en desarrollo Full Stack con mis competencias profesionales en Ciencia de Datos, '
-              'lo que me permite abordar proyectos de extremo a extremo: desde la arquitectura, ingeniería y análisis '
-              'de datos hasta la implementación de APIs robustas.'
+          # Formación completada.
+          bundle = bundle.replace(
+              'name:"Fundamentos de nube y ciencia de datos de producción",completed:!1',
+              'name:"Fundamentos de nube y ciencia de datos de producción",completed:!0',
+              1,
           )
 
-          bundle = bundle.replace(old_intro, new_intro)
-          bundle = bundle.replace(old_detail, new_detail)
+          # Perfil profesional actualizado.
+          bundle = bundle.replace(
+              'Soy un desarrollador dominicano apasionado por el código limpio y el aprendizaje continuo. Mi enfoque está en construir sistemas escalables que resuelvan problemas reales de negocio.',
+              'Soy un Desarrollador Web Full Stack y Científico de Datos dominicano, apasionado por el código limpio y el aprendizaje continuo. Mi enfoque está en construir sistemas escalables y soluciones basadas en datos que resuelvan problemas reales de negocio.'
+          )
+          bundle = bundle.replace(
+              'Actualmente combino mi experiencia en desarrollo Full Stack con mi formación en Ciencia de Datos, lo que me permite abordar proyectos desde la arquitectura de datos hasta la implementación de APIs robustas.',
+              'Combino mi experiencia en desarrollo Full Stack con mis competencias profesionales en Ciencia de Datos, lo que me permite abordar proyectos de extremo a extremo: desde la arquitectura, ingeniería y análisis de datos hasta la implementación de APIs robustas.'
+          )
           bundle = bundle.replace(
               'con mi formación en Ciencia de Datos',
               'como Científico de Datos certificado'
           )
 
-          if completed not in bundle:
-              raise SystemExit('No quedó marcado el módulo de nube como completado')
-          if 'con mi formación en Ciencia de Datos' in bundle:
-              raise SystemExit('Todavía queda texto indicando formación en Ciencia de Datos')
-          if 'scope:["Cloud (AWS/GCP)","Production ML Systems","Deep Learning","TensorFlow"]' not in bundle:
-              raise SystemExit('La lista de conocimientos próximos cambió inesperadamente')
+          # Todos estos conocimientos pasan a “Lo que manejo”; scope queda vacío.
+          old_skills = 'known:["SQL","Snowflake","Power BI","DAX","Power Query","Pandas","NumPy","ETL Pipelines","Descriptive & Inferential Statistics","Data Warehousing","Data Modeling","EDA","Web Scraping","Matplotlib","Machine Learning","Scikit-learn"],scope:["Cloud (AWS/GCP)","Production ML Systems","Deep Learning","TensorFlow"]'
+          new_skills = 'known:["SQL","Snowflake","Power BI","DAX","Power Query","Pandas","NumPy","ETL Pipelines","Descriptive & Inferential Statistics","Data Warehousing","Data Modeling","EDA","Web Scraping","Matplotlib","Machine Learning","Scikit-learn","Cloud (AWS/GCP)","Production ML Systems","Deep Learning","TensorFlow"],scope:[]'
+
+          if old_skills in bundle:
+              bundle = bundle.replace(old_skills, new_skills, 1)
+          elif new_skills not in bundle:
+              raise SystemExit('No se encontró la configuración de conocimientos de Data Science')
+
+          # Mantener otros cambios solicitados.
+          bundle = bundle.replace('30+', '70+')
+          bundle = bundle.replace('Ciencia de Datos (en curso)', 'Ciencia de Datos (completado)')
+          bundle = bundle.replace(
+              'En formación activa en Ciencia de Datos con competencias en Power BI, ETL y Data Warehousing.',
+              'Científico de Datos certificado, con competencias en Power BI, ETL y Data Warehousing.'
+          )
 
           versioned_bundle.write_text(bundle, encoding='utf-8')
 
           html = index_path.read_text(encoding='utf-8')
           html = re.sub(
               r'src="/Nass10000/assets/index-[^"]+\.js(?:\?[^"]*)?"',
-              'src="/Nass10000/assets/index-portfolio-v4.js?v=20260711-4"',
+              'src="/Nass10000/assets/index-portfolio-v5.js?v=20260711-5"',
               html,
               count=1,
           )
           html = re.sub(
               r'src="/Nass10000/requested-changes\.js(?:\?[^"]*)?"',
-              'src="/Nass10000/requested-changes.js?v=20260711-4"',
+              'src="/Nass10000/requested-changes.js?v=20260711-5"',
               html,
               count=1,
           )
           index_path.write_text(html, encoding='utf-8')
           PY
 
-      - name: Verificar archivos publicados
+      - name: Verificar versión final
         run: |
-          grep -q 'index-portfolio-v4.js?v=20260711-4' portfolio/index.html
-          grep -q 'Fundamentos de nube y ciencia de datos de producción",completed:!0' portfolio/assets/index-portfolio-v4.js
-          grep -q 'Científico de Datos dominicano' portfolio/assets/index-portfolio-v4.js
-          ! grep -q 'con mi formación en Ciencia de Datos' portfolio/assets/index-portfolio-v4.js
+          grep -q 'index-portfolio-v5.js?v=20260711-5' portfolio/index.html
+          grep -q 'Fundamentos de nube y ciencia de datos de producción",completed:!0' portfolio/assets/index-portfolio-v5.js
+          grep -q 'Cloud (AWS/GCP).*Production ML Systems.*Deep Learning.*TensorFlow"],scope:\[\]' portfolio/assets/index-portfolio-v5.js
+          grep -q 'Científico de Datos dominicano' portfolio/assets/index-portfolio-v5.js
+          ! grep -q 'con mi formación en Ciencia de Datos' portfolio/assets/index-portfolio-v5.js
 
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
@@ -122,6 +129,6 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add portfolio/index.html portfolio/assets/index-portfolio-v4.js
-          git diff --cached --quiet || git commit -m 'Publicar versión actualizada del portafolio'
+          git add portfolio/index.html portfolio/assets/index-portfolio-v5.js
+          git diff --cached --quiet || git commit -m 'Eliminar scope y marcar conocimientos completados'
           git push
