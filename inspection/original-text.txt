@@ -1,0 +1,567 @@
+NW.
+Sobre mí
+Skills
+Proyectos
+Formación
+Contacto
+GitHub
+[00.00] // INICIO
+Hola, soy Nassim
+Full Stack Developer
+Ciencia de Datos
+
+Desarrollador Web Full Stack enfocado en backend, especializado en NestJS, PostgreSQL y TypeORM. En formación activa en Ciencia de Datos con competencias en Power BI, ETL y Data Warehousing.
+
+Ver Proyectos
+Contactar
+Actualmente en Grupo de Consultoría Henca como Programador
+[01.00] // SOBRE MÍ
+Construyendo sistemas robustos
+
+Soy un desarrollador dominicano apasionado por el código limpio y el aprendizaje continuo. Mi enfoque está en construir sistemas escalables que resuelvan problemas reales de negocio.
+
+Actualmente combino mi experiencia en desarrollo Full Stack con mi formación en Ciencia de Datos, lo que me permite abordar proyectos desde la arquitectura de datos hasta la implementación de APIs robustas.
+
+30+
+Proyectos completados
+505K+
+Registros procesados
+Tech Stack Principal
+JavaScript
+TypeScript
+Python
+NestJS
+PostgreSQL
+Snowflake
+Power BI
+Odoo 18
+Docker
+Git
+República Dominicana
+Disponible para trabajo remoto
+[02.00] // HABILIDADES
+Competencias técnicas
+Full Stack Development
+Lo que manejo
+JavaScript
+TypeScript
+NestJS
+PostgreSQL
+TypeORM
+Python
+Odoo 18
+React
+Node.js
+Express
+JWT Auth
+OAuth2
+Webhooks
+XML-RPC
+REST APIs
+Swagger
+Jest
+Docker
+Git
+Data Science & BI
+Lo que manejo
+SQL
+Snowflake
+Power BI
+DAX
+Power Query
+Pandas
+NumPy
+ETL Pipelines
+Descriptive & Inferential Statistics
+Data Warehousing
+Data Modeling
+EDA
+Web Scraping
+Matplotlib
+Machine Learning
+Scikit-learn
+En scope (próximamente)
+Cloud (AWS/GCP)
+Production ML Systems
+Deep Learning
+TensorFlow
+[03.00] // PROYECTOS
+Proyectos destacados
+
+GitHub + GitLab (Grupo de Consultoría Henca)
+
+Todos
+Odoo Enterprise
+Ciencia de Datos
+Full Stack
+Mobile App
+Odoo Enterprise
+Henca
+NW Precintos
+
+Sistema de Gestión de Precintos y Comisiones
+
+Módulo Odoo 18 Enterprise para gestión integral de precintos y comisiones de vendedores. Sistema maduro con 191 commits, incluyendo gestión de categorías, grupos de comisiones y formularios de usuario.
+
+191 commits
+Odoo 18
+Comisiones
+Python
+Odoo 18
+PostgreSQL
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Aurora Precintos
+
+Integración Aurora con Portal y Cron Jobs
+
+Módulo Odoo 18 para solicitudes de precintos con integración Aurora. Incluye portal templates personalizados, manejo de CSRF, cron jobs automatizados y gestión de tareas con asignación de usuarios.
+
+Aurora Integration
+Portal Templates
+Cron Jobs
+Python
+Odoo 18
+JavaScript
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+Uber Eats Integration
+
+Integración Completa Uber Eats × Odoo 18
+
+Integración end-to-end entre Uber Eats Sandbox y Odoo 18. Arquitectura monolítica modular con módulos de autenticación OAuth2, tiendas, menú, pedidos, POS e inventario. Flujo completo: conectar cuenta merchant, provisionar tienda, sincronizar menú, actualizar disponibilidad, recibir pedidos reales, aceptar/rechazar desde POS y reflejar inventario. Incluye webhooks, cola de jobs asíncronos, idempotencia, recuperación de jobs atascados y trazabilidad con logs técnicos.
+
+Uber Eats API
+OAuth2
+Webhooks
+POS
+End-to-End
+Python
+Odoo 18
+Uber Eats API
+OAuth2
+XML-RPC
+PostgreSQL
+Webhooks
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW POS Settle Account
+
+Liquidación de Cuentas POS
+
+Módulo Odoo 18 para liquidación y cierre de cuentas en punto de venta. Gestión automatizada de balances y conciliación de pagos POS.
+
+POS
+Liquidación
+Pagos
+Python
+Odoo 18
+PostgreSQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Invoice Analytic Distribution
+
+Distribución Analítica de Facturas
+
+Módulo para distribución analítica automatizada en facturas. Asignación de costos por centros de costo y cuentas analíticas en Odoo 18.
+
+Analítica
+Facturas
+Costos
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW POS New Customers Report
+
+Reporte de Nuevos Clientes POS
+
+Módulo de reportes para seguimiento de nuevos clientes registrados en punto de venta. Métricas de adquisición y análisis de clientes.
+
+Reportes
+POS
+Clientes
+Python
+Odoo 18
+SQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Journal Product Filter
+
+Filtro de Productos por Diario
+
+Módulo para filtrado avanzado de productos por diario contable. Mejora la navegación y búsqueda en el módulo de contabilidad de Odoo 18.
+
+Filtros
+Diarios
+Contabilidad
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Customization Report
+
+Reportes Personalizados
+
+Módulo de reportes personalizados para Odoo 18. Generación de informes adaptados a las necesidades específicas del negocio.
+
+Reportes
+Personalización
+Business
+Python
+Odoo 18
+QWeb
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Followup Report
+
+Reportes de Seguimiento
+
+Módulo de reportes de seguimiento de cobros y pagos pendientes. Automatización de recordatorios y gestión de cartera.
+
+Seguimiento
+Cobros
+Reportes
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Invoice Partner Taxpayer
+
+Facturación de Contribuyentes
+
+Módulo para gestión de datos fiscales de contribuyentes en facturas. Validación de RNC/cédula y cumplimiento tributario.
+
+Fiscal
+RNC
+Contribuyentes
+Python
+Odoo 18
+PostgreSQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Distribución Analítica
+
+Distribución Analítica Contable
+
+Módulo de distribución analítica para asignación de gastos e ingresos por centros de costo en la contabilidad de Odoo 18.
+
+Analítica
+Centros de costo
+Contabilidad
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Invoice Sale Enhancements
+
+Mejoras en Facturas de Venta
+
+Módulo de mejoras y extensiones para el flujo de facturación de ventas. Campos adicionales, validaciones y automatizaciones.
+
+Facturas
+Ventas
+Mejoras
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Discount Tiers
+
+Niveles de Descuento
+
+Módulo para gestión de niveles de descuento escalonados. Configuración de reglas de descuento por volumen, cliente o categoría.
+
+Descuentos
+Niveles
+Ventas
+Python
+Odoo 18
+PostgreSQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Pickpack Commissions
+
+Comisiones de Pick & Pack
+
+Módulo de cálculo de comisiones para operaciones de pick and pack en almacén. Gestión de incentivos por productividad.
+
+Comisiones
+Almacén
+Pick & Pack
+Python
+Odoo 18
+SQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Sale Commission Tiers
+
+Niveles de Comisiones de Venta
+
+Módulo para gestión de comisiones escalonadas por vendedor. Cálculo automático basado en metas y volumen de ventas.
+
+Comisiones
+Vendedores
+Metas
+Python
+Odoo 18
+PostgreSQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Invoice Late Fee
+
+Cargos por Mora en Facturas
+
+Módulo para cálculo y aplicación automática de cargos por mora en facturas vencidas. Configuración de tasas y períodos de gracia.
+
+Mora
+Facturas
+Automatización
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Orden Servicios
+
+Órdenes de Servicios
+
+Módulo para gestión de órdenes de servicio. Flujo completo desde solicitud hasta facturación con seguimiento de estados.
+
+Servicios
+Órdenes
+Flujo
+Python
+Odoo 18
+PostgreSQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Stock Report
+
+Reportes de Inventario
+
+Módulo de reportes avanzados de inventario. Análisis de stock, movimientos, valoración y alertas de reabastecimiento.
+
+Inventario
+Reportes
+Stock
+Python
+Odoo 18
+SQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Facturas Lugar
+
+Facturas por Lugar
+
+Módulo para gestión de facturación por ubicación o sucursal. Segmentación de facturas por lugar de operación.
+
+Facturas
+Ubicación
+Sucursales
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Ocultar Diarios
+
+Ocultar Diarios Contables
+
+Módulo para control de visibilidad de diarios contables por usuario o grupo. Seguridad y organización en el módulo contable.
+
+Seguridad
+Diarios
+Permisos
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Sale Cost Estimation
+
+Estimación de Costos de Venta
+
+Módulo para estimación y análisis de costos en órdenes de venta. Cálculo de márgenes y proyecciones de rentabilidad.
+
+Costos
+Márgenes
+Ventas
+Python
+Odoo 18
+PostgreSQL
+Proyecto privado (GitLab corporativo)
+Odoo Enterprise
+Henca
+NW Entregado A
+
+Registro de Entregas
+
+Módulo para registro y seguimiento de entregas a destinatarios. Trazabilidad completa del proceso de entrega.
+
+Entregas
+Trazabilidad
+Logística
+Python
+Odoo 18
+XML
+Proyecto privado (GitLab corporativo)
+Ciencia de Datos
+FleetLogix
+
+Sistema de Gestión y Análisis de Datos Logísticos
+
+Base de datos transaccional en PostgreSQL con 6 tablas y 505,000+ registros. Data Warehouse con esquema estrella en Snowflake, pipeline ETL automatizado y 10+ KPIs de negocio.
+
+99.8% mejora rendimiento
+505K+ registros
+Star Schema
+Python
+PostgreSQL
+Snowflake
+SQL
+Ver en GitHub
+Ciencia de Datos
+Análisis NYC Restaurants
+
+Integración API Yelp Fusion
+
+Integración con API Yelp Fusion para extracción de datos de restaurantes en Nueva York. Análisis exploratorio de datos (EDA), limpieza y visualizaciones accionables.
+
+API Integration
+EDA
+Visualizaciones
+Python
+Pandas
+Matplotlib
+API REST
+Ver en GitHub
+Ciencia de Datos
+FoodTrack DB
+
+Base de Datos para Food Trucks
+
+Base de datos relacional completa para gestión de food trucks. Modelo entidad-relación, normalización y consultas SQL avanzadas para análisis de operaciones.
+
+Modelo ER
+SQL Avanzado
+Normalización
+Python
+PostgreSQL
+SQL
+Ver en GitHub
+Full Stack
+Sistema Aeroportuario
+
+Gestión de Empleados y Vuelos
+
+Sistema para planificar y asignar empleados a vuelos, visualizar horas trabajadas y costos. Integración con SAP B1 y nómina para cálculo de gastos.
+
+Integración SAP B1
+Cálculo de nómina
+Freelance
+TypeScript
+NestJS
+PostgreSQL
+Ver en GitHub
+Full Stack
+API REST E-commerce
+
+Backend Completo con Autenticación
+
+CRUD completo de usuarios y productos. Autenticación con JWT y control de acceso por roles. Relaciones N:M entre productos y órdenes.
+
+JWT Auth
+Swagger Docs
+Jest Testing
+NestJS
+TypeORM
+PostgreSQL
+Swagger
+Ver en GitHub
+Full Stack
+Gestión de Turnos Hospital
+
+Sistema de Turnos Hospitalarios
+
+Sistema completo para gestión de turnos en hospitales. Permite asignación de turnos, visualización de horarios y gestión de personal médico.
+
+Gestión de turnos
+Personal médico
+Horarios
+JavaScript
+Node.js
+PostgreSQL
+Ver en GitHub
+Mobile App
+Anger Note App
+
+Aplicación Móvil de Notas
+
+Aplicación móvil desarrollada en TypeScript para gestión de notas personales. Interfaz intuitiva y funcionalidades de organización.
+
+Mobile App
+TypeScript
+UI/UX
+TypeScript
+React Native
+Mobile
+Ver en GitHub
+[04.00] // FORMACIÓN
+Educación y certificaciones
+Formación Académica
+B.A. Mercadeo
+INTEC
+Diplomado Programación Web JavaScript
+ITLA
+Full Stack Web Developer
+Henry
+Ciencia de Datos (en curso)
+Henry
+Módulos de Ciencia de Datos
+✓
+Fundamentos de Ciencias de Datos, Estadística y Probabilidad
+✓
+Bases de Datos y Arquitectura
+✓
+Business Intelligence y Visualización con Power BI
+✓
+Machine Learning
+○
+Fundamentos de nube y ciencia de datos de producción
+[05.00] // CONTACTO
+¿Trabajamos juntos?
+
+Estoy abierto a nuevas oportunidades y colaboraciones. No dudes en contactarme para discutir proyectos o simplemente saludar.
+
+wessinnassim@gmail.com
+809-769-1130
+© 2025 Nassim Wessin. Todos los derechos reservados.
+Diseñado con Blueprint Engineer aesthetic
