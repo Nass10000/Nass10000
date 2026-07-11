@@ -1,0 +1,225 @@
+name: Reemplazar portafolio por copia fiel de Manus
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/replace-with-manus-copy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  clone-and-patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Node y navegador
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Playwright
+        run: |
+          npm init -y
+          npm install playwright
+          npx playwright install --with-deps chromium
+
+      - name: Copiar página original y aplicar solo los dos cambios solicitados
+        run: |
+          cat > /tmp/clone-manus.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          import fs from 'node:fs/promises';
+          import path from 'node:path';
+
+          const source = 'https://nassimfolio-tlkpkfh4.manus.space/';
+          const sourceOrigin = new URL(source).origin;
+          const output = path.resolve('portfolio');
+
+          await fs.rm(output, { recursive: true, force: true });
+          await fs.mkdir(output, { recursive: true });
+
+          const browser = await chromium.launch({ headless: true });
+          const page = await browser.newPage({
+            viewport: { width: 1440, height: 1000 },
+            deviceScaleFactor: 1,
+          });
+
+          const downloads = [];
+
+          function localPath(rawUrl, contentType = '') {
+            const url = new URL(rawUrl);
+            if (url.origin !== sourceOrigin) return null;
+            let pathname = decodeURIComponent(url.pathname);
+            if (pathname === '/') return path.join(output, 'index.html');
+            if (pathname.endsWith('/')) pathname += 'index.html';
+            if (!path.extname(pathname) && contentType.includes('text/html')) pathname += '/index.html';
+            return path.join(output, pathname.replace(/^\/+/, ''));
+          }
+
+          page.on('response', response => {
+            const task = (async () => {
+              try {
+                if (response.status() !== 200) return;
+                const contentType = (await response.headerValue('content-type')) || '';
+                const destination = localPath(response.url(), contentType);
+                if (!destination) return;
+                const body = await response.body();
+                await fs.mkdir(path.dirname(destination), { recursive: true });
+                await fs.writeFile(destination, body);
+              } catch (error) {
+                console.log(`Aviso: no se pudo guardar ${response.url()}: ${error.message}`);
+              }
+            })();
+            downloads.push(task);
+          });
+
+          const mainResponse = await page.goto(source, {
+            waitUntil: 'networkidle',
+            timeout: 120000,
+          });
+
+          await page.evaluate(async () => {
+            await new Promise(resolve => {
+              let y = 0;
+              const step = 650;
+              const timer = setInterval(() => {
+                window.scrollTo(0, y);
+                y += step;
+                if (y > document.body.scrollHeight + 800) {
+                  clearInterval(timer);
+                  window.scrollTo(0, 0);
+                  setTimeout(resolve, 1500);
+                }
+              }, 220);
+            });
+          });
+
+          await page.waitForTimeout(2500);
+          await Promise.allSettled(downloads);
+
+          const indexPath = path.join(output, 'index.html');
+          try {
+            await fs.access(indexPath);
+          } catch {
+            const html = mainResponse ? await mainResponse.text() : await page.content();
+            await fs.writeFile(indexPath, html, 'utf8');
+          }
+
+          await browser.close();
+
+          async function walk(dir) {
+            const result = [];
+            for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) result.push(...await walk(full));
+              else result.push(full);
+            }
+            return result;
+          }
+
+          const textExtensions = new Set(['.html', '.css', '.js', '.mjs', '.json', '.svg', '.xml', '.txt', '.webmanifest']);
+          for (const file of await walk(output)) {
+            if (!textExtensions.has(path.extname(file).toLowerCase())) continue;
+            let text;
+            try { text = await fs.readFile(file, 'utf8'); } catch { continue; }
+
+            text = text
+              .replaceAll(`${sourceOrigin}/assets/`, 'assets/')
+              .replaceAll(`${sourceOrigin}/`, './')
+              .replace(/(["'(=])\/assets\//g, '$1assets/')
+              .replace(/url\((["']?)\/assets\//g, 'url($1assets/');
+
+            await fs.writeFile(file, text, 'utf8');
+          }
+
+          const patch = `(() => {
+            const simpleReplacements = [
+              ['Más de 30 proyectos', 'Más de 70 proyectos'],
+              ['más de 30 proyectos', 'más de 70 proyectos'],
+              ['30+ proyectos', '70+ proyectos'],
+              ['30+', '70+'],
+              ['Ciencia de Datos en curso', 'Ciencia de Datos completada'],
+              ['Ciencia de datos en curso', 'Ciencia de datos completada'],
+              ['Certificación en curso', 'Certificación completada'],
+              ['Certificacion en curso', 'Certificación completada']
+            ];
+
+            const inProgress = /^(en curso|en progreso|cursando|en formación)$/i;
+
+            function replaceText(root) {
+              if (!root) return;
+              const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+              const nodes = [];
+              while (walker.nextNode()) nodes.push(walker.currentNode);
+              for (const node of nodes) {
+                if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.parentElement?.tagName)) continue;
+                let value = node.nodeValue || '';
+                for (const [from, to] of simpleReplacements) value = value.split(from).join(to);
+                node.nodeValue = value;
+              }
+            }
+
+            function completeDataScienceCard() {
+              const candidates = [...document.querySelectorAll('body *')]
+                .filter(el => /ciencia de datos/i.test(el.textContent || ''));
+
+              for (const candidate of candidates) {
+                let container = candidate;
+                for (let i = 0; i < 5 && container?.parentElement; i++) {
+                  const text = container.textContent || '';
+                  if (/ciencia de datos/i.test(text) && /(en curso|en progreso|cursando|en formación)/i.test(text)) break;
+                  container = container.parentElement;
+                }
+                if (!container) continue;
+
+                const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+                while (walker.nextNode()) {
+                  const node = walker.currentNode;
+                  const clean = (node.nodeValue || '').trim();
+                  if (inProgress.test(clean)) {
+                    node.nodeValue = node.nodeValue.replace(clean, 'Completado');
+                  }
+                }
+              }
+            }
+
+            function apply() {
+              replaceText(document.body);
+              completeDataScienceCard();
+            }
+
+            function start() {
+              apply();
+              const observer = new MutationObserver(apply);
+              observer.observe(document.body, { childList: true, subtree: true });
+              setTimeout(() => observer.disconnect(), 20000);
+            }
+
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+            else start();
+          })();`;
+
+          await fs.writeFile(path.join(output, 'requested-changes.js'), patch, 'utf8');
+          await fs.writeFile(path.join(output, '.nojekyll'), '', 'utf8');
+
+          let index = await fs.readFile(indexPath, 'utf8');
+          const tag = '<script defer src="requested-changes.js"></script>';
+          if (!index.includes('requested-changes.js')) {
+            index = index.includes('</body>') ? index.replace('</body>', `${tag}</body>`) : `${index}${tag}`;
+          }
+          await fs.writeFile(indexPath, index, 'utf8');
+          EOF
+
+          node /tmp/clone-manus.mjs
+
+      - name: Guardar reemplazo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add portfolio
+          git diff --cached --quiet || git commit -m "Reemplazar portafolio por copia de Manus con cambios solicitados"
+          git push
