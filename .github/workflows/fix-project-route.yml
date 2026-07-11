@@ -1,0 +1,181 @@
+name: Corregir ruta y publicar portafolio
+run-name: Corregir inicio, quitar sello de Manus y publicar
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-project-route.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Corregir ruta base y eliminar sello de Manus
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('portfolio')
+          index_path = root / 'index.html'
+          patch_path = root / 'requested-changes.js'
+
+          html = index_path.read_text(encoding='utf-8')
+
+          html = html.replace(
+              'src="assets/index-Dypqe6ft.js"',
+              'src="/Nass10000/assets/index-Dypqe6ft.js"'
+          )
+          html = html.replace(
+              'href="assets/index-D49z4kK5.css"',
+              'href="/Nass10000/assets/index-D49z4kK5.css"'
+          )
+          html = html.replace(
+              'src="requested-changes.js"',
+              'src="/Nass10000/requested-changes.js"'
+          )
+
+          early_script = '''<script id="github-pages-route-fix">
+          (() => {
+            const projectPath = '/Nass10000/';
+            if (window.location.pathname === projectPath || window.location.pathname === '/Nass10000') {
+              window.__PORTFOLIO_PROJECT_PATH__ = projectPath;
+              window.history.replaceState(window.history.state, '', '/' + window.location.search + window.location.hash);
+            }
+          })();
+          </script>'''
+
+          if 'id="github-pages-route-fix"' not in html:
+              marker = '<script type="module" crossorigin'
+              html = html.replace(marker, early_script + '\n    ' + marker, 1)
+
+          index_path.write_text(html, encoding='utf-8')
+
+          patch = r'''(() => {
+            const projectPath = '/Nass10000/';
+            const replacements = new Map([
+              ['30+', '70+'],
+              ['Ciencia de Datos (en curso)', 'Ciencia de Datos (completado)']
+            ]);
+
+            function applyTextChanges(root = document.body) {
+              if (!root) return;
+              const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+              const nodes = [];
+              while (walker.nextNode()) nodes.push(walker.currentNode);
+
+              for (const node of nodes) {
+                if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.parentElement?.tagName)) continue;
+                const current = node.nodeValue || '';
+                let updated = current;
+                for (const [from, to] of replacements) {
+                  updated = updated.split(from).join(to);
+                }
+                if (updated !== current) node.nodeValue = updated;
+              }
+            }
+
+            function removeManusBadge() {
+              const elements = [...document.querySelectorAll('body *')];
+              for (const element of elements) {
+                const text = (element.textContent || '').trim().toLowerCase();
+                if (text !== 'made with manus' && text !== 'create with manus' && text !== 'created with manus') continue;
+
+                let target = element.closest('a, button') || element;
+                let parent = target.parentElement;
+
+                while (parent && parent !== document.body) {
+                  const parentText = (parent.textContent || '').trim().toLowerCase();
+                  const style = window.getComputedStyle(parent);
+                  if (
+                    style.position === 'fixed' ||
+                    style.position === 'sticky' ||
+                    parentText === 'made with manus' ||
+                    parentText === 'create with manus' ||
+                    parentText === 'created with manus'
+                  ) {
+                    target = parent;
+                    break;
+                  }
+                  parent = parent.parentElement;
+                }
+
+                target.style.setProperty('display', 'none', 'important');
+                target.setAttribute('aria-hidden', 'true');
+              }
+            }
+
+            function restoreProjectUrl() {
+              if (!window.__PORTFOLIO_PROJECT_PATH__) return;
+              if (window.location.pathname !== '/') return;
+              window.history.replaceState(
+                window.history.state,
+                '',
+                projectPath + window.location.search + window.location.hash
+              );
+            }
+
+            function applyEverything() {
+              applyTextChanges();
+              removeManusBadge();
+            }
+
+            function start() {
+              applyEverything();
+
+              const observer = new MutationObserver(applyEverything);
+              observer.observe(document.body, { childList: true, subtree: true });
+
+              window.setTimeout(restoreProjectUrl, 1200);
+              window.setTimeout(applyEverything, 1600);
+              window.setTimeout(() => observer.disconnect(), 30000);
+            }
+
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', start);
+            } else {
+              start();
+            }
+          })();'''
+
+          patch_path.write_text(patch, encoding='utf-8')
+          PY
+
+      - name: Guardar corrección
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add portfolio/index.html portfolio/requested-changes.js
+          git diff --cached --quiet || git commit -m 'Corregir ruta inicial y quitar sello de Manus'
+          git push
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Subir sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: portfolio
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
