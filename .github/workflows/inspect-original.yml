@@ -1,0 +1,47 @@
+name: Inspeccionar página original
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inspect-original.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: |
+          npm init -y
+          npm install playwright
+          npx playwright install --with-deps chromium
+      - name: Extraer texto y HTML renderizado
+        run: |
+          cat > inspect.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          import fs from 'node:fs/promises';
+          const browser = await chromium.launch({headless:true});
+          const page = await browser.newPage({viewport:{width:1440,height:1000}});
+          await page.goto('https://nassimfolio-tlkpkfh4.manus.space/', {waitUntil:'networkidle', timeout:120000});
+          await page.waitForTimeout(3000);
+          await fs.mkdir('inspection',{recursive:true});
+          await fs.writeFile('inspection/original-text.txt', await page.locator('body').innerText(), 'utf8');
+          await fs.writeFile('inspection/rendered.html', await page.content(), 'utf8');
+          await page.screenshot({path:'inspection/original-page.png', fullPage:true});
+          await browser.close();
+          EOF
+          node inspect.mjs
+      - name: Guardar inspección
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inspection
+          git diff --cached --quiet || git commit -m "Guardar inspección de la página original"
+          git push
