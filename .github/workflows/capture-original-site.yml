@@ -1,0 +1,49 @@
+name: Capturar página original de Manus
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/capture-original-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar herramientas
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+
+      - name: Descargar página y recursos
+        run: |
+          rm -rf source-site mirror-temp
+          mkdir -p mirror-temp
+          wget \
+            --mirror \
+            --page-requisites \
+            --convert-links \
+            --adjust-extension \
+            --no-parent \
+            --directory-prefix=mirror-temp \
+            https://nassimfolio-tlkpkfh4.manus.space/
+
+          SITE_DIR="mirror-temp/nassimfolio-tlkpkfh4.manus.space"
+          test -d "$SITE_DIR"
+          mkdir -p source-site
+          cp -R "$SITE_DIR"/. source-site/
+
+      - name: Guardar copia fuente
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add source-site
+          git diff --cached --quiet || git commit -m "Capturar página original de Manus"
+          git push
