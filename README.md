@@ -240,5 +240,5 @@ width="300"
 * 📱 **Teléfono:** 809-769-1130
 * 💼 **LinkedIn:** [linkedin.com/in/nassim-wessin-03666b18a](https://www.linkedin.com/in/nassim-wessin-03666b18a)
 * 🐙 **GitHub:** [github.com/Nass10000](https://github.com/Nass10000)
-* 🌐 **Portafolio:** [nassimfolio-tlkpkfh4.manus.space](https://nassimfolio-tlkpkfh4.manus.space/#contacto)
+* 🌐 **Portafolio:** [nass10000.github.io/Nass10000](https://nass10000.github.io/Nass10000/)
 * 🗃️ **Recuperación del repositorio anterior:** [github.com/Nass10000/repositorio-recuperado](https://github.com/Nass10000/repositorio-recuperado)
