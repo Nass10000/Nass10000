@@ -1,5 +1,5 @@
 name: Actualizar y publicar portafolio
-run-name: Actualizar perfil como científico de datos y publicar
+run-name: Marcar módulo de nube como completado y publicar
 
 on:
   push:
@@ -28,53 +28,45 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      - name: Actualizar contenido en el archivo principal
+      - name: Marcar únicamente el módulo de nube como completado
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
 
-          root = Path('portfolio')
-          bundle_path = root / 'assets/index-Dypqe6ft.js'
+          bundle_path = Path('portfolio/assets/index-Dypqe6ft.js')
           bundle = bundle_path.read_text(encoding='utf-8')
 
-          # Mantener la ruta base correcta para GitHub Pages.
-          bundle = bundle.replace(
-              'Wv={hook:aw,searchHook:tw,parser:GA,base:"",ssrPath:void 0',
-              'Wv={hook:aw,searchHook:tw,parser:GA,base:"/Nass10000",ssrPath:void 0'
-          )
+          pending = 'name:"Fundamentos de nube y ciencia de datos de producción",completed:!1'
+          completed = 'name:"Fundamentos de nube y ciencia de datos de producción",completed:!0'
 
-          # Cambios permanentes solicitados en el contenido original.
-          bundle = bundle.replace('30+', '70+')
-          bundle = bundle.replace(
-              'Ciencia de Datos (en curso)',
-              'Ciencia de Datos (completado)'
-          )
-          bundle = bundle.replace(
-              'En formación activa en Ciencia de Datos con competencias en Power BI, ETL y Data Warehousing.',
-              'Científico de Datos certificado, con competencias en Power BI, ETL y Data Warehousing.'
-          )
-          bundle = bundle.replace(
-              'En formación activa en Ciencia de Datos',
-              'Científico de Datos certificado'
-          )
+          if pending in bundle:
+              bundle = bundle.replace(pending, completed, 1)
+          elif completed not in bundle:
+              raise SystemExit('No se encontró el estado del módulo de nube')
 
-          # Cubrir variaciones con espacios no separables o saltos internos.
-          bundle = re.sub(
-              r'En\s+formación\s+activa\s+en\s+Ciencia\s+de\s+Datos\s+con\s+competencias\s+en\s+Power\s+BI,\s*ETL\s+y\s+Data\s+Warehousing\.',
-              'Científico de Datos certificado, con competencias en Power BI, ETL y Data Warehousing.',
-              bundle
-          )
+          # Verificación estricta: no tocar la lista de conocimientos próximos.
+          if 'scope:["Cloud (AWS/GCP)","Production ML Systems","Deep Learning","TensorFlow"]' not in bundle:
+              raise SystemExit('La lista de próximos conocimientos cambió inesperadamente')
 
           bundle_path.write_text(bundle, encoding='utf-8')
           PY
 
-      - name: Guardar cambios permanentes
+      - name: Verificar cambio exacto
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          bundle = Path('portfolio/assets/index-Dypqe6ft.js').read_text(encoding='utf-8')
+          assert 'name:"Fundamentos de nube y ciencia de datos de producción",completed:!0' in bundle
+          assert 'scope:["Cloud (AWS/GCP)","Production ML Systems","Deep Learning","TensorFlow"]' in bundle
+          print('Módulo de nube completado; próximos conocimientos sin cambios.')
+          PY
+
+      - name: Guardar cambio permanente
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add portfolio/assets/index-Dypqe6ft.js
-          git diff --cached --quiet || git commit -m 'Actualizar perfil como científico de datos certificado'
+          git diff --cached --quiet || git commit -m 'Marcar fundamentos de nube como completado'
           git push
 
       - name: Configurar GitHub Pages
