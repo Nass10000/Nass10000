@@ -1,0 +1,62 @@
+name: Inspeccionar módulos de nube
+run-name: Localizar estados internos de nube y producción
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inspect-current-bundle.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extraer contexto de los módulos
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          bundle = Path('portfolio/assets/index-Dypqe6ft.js').read_text(encoding='utf-8')
+          terms = [
+              'Fundamentos de nube y ciencia de datos de producción',
+              'Cloud (AWS/GCP)',
+              'Production ML Systems',
+              'En scope (próximamente)',
+          ]
+
+          output = []
+          for term in terms:
+              start = 0
+              found = False
+              while True:
+                  index = bundle.find(term, start)
+                  if index == -1:
+                      break
+                  found = True
+                  left = max(0, index - 1800)
+                  right = min(len(bundle), index + len(term) + 1800)
+                  output.append(f'\n===== {term} @ {index} =====\n')
+                  output.append(bundle[left:right])
+                  output.append('\n')
+                  start = index + len(term)
+              if not found:
+                  output.append(f'\n===== {term}: NO ENCONTRADO =====\n')
+
+          target = Path('inspection/current-bundle-snippets.txt')
+          target.parent.mkdir(parents=True, exist_ok=True)
+          target.write_text(''.join(output), encoding='utf-8')
+          PY
+
+      - name: Guardar inspección
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inspection/current-bundle-snippets.txt
+          git diff --cached --quiet || git commit -m 'Guardar contexto actual de módulos de nube'
+          git push
