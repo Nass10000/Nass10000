@@ -1,4 +1,5 @@
 name: Publicar portafolio
+run-name: Publicar la copia actual de Manus en GitHub Pages
 
 on:
   push:
@@ -24,6 +25,7 @@ environment:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
