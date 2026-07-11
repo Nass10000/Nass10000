@@ -12,6 +12,7 @@
     while (walker.nextNode()) nodes.push(walker.currentNode);
 
     for (const node of nodes) {
+      if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(node.parentElement?.tagName)) continue;
       const current = node.nodeValue || '';
       let updated = current;
       for (const [from, to] of replacements) {
@@ -21,43 +22,60 @@
     }
   }
 
-  function findGoHomeControl() {
-    return [...document.querySelectorAll('a, button')].find(element =>
-      (element.textContent || '').trim().toLowerCase() === 'go home'
-    );
+  function removeManusBadge() {
+    const elements = [...document.querySelectorAll('body *')];
+    for (const element of elements) {
+      const text = (element.textContent || '').trim().toLowerCase();
+      if (text !== 'made with manus' && text !== 'create with manus' && text !== 'created with manus') continue;
+
+      let target = element.closest('a, button') || element;
+      let parent = target.parentElement;
+
+      while (parent && parent !== document.body) {
+        const parentText = (parent.textContent || '').trim().toLowerCase();
+        const style = window.getComputedStyle(parent);
+        if (
+          style.position === 'fixed' ||
+          style.position === 'sticky' ||
+          parentText === 'made with manus' ||
+          parentText === 'create with manus' ||
+          parentText === 'created with manus'
+        ) {
+          target = parent;
+          break;
+        }
+        parent = parent.parentElement;
+      }
+
+      target.style.setProperty('display', 'none', 'important');
+      target.setAttribute('aria-hidden', 'true');
+    }
   }
 
-  let routeCorrected = false;
-
-  function correctInitialRoute() {
-    if (routeCorrected) return;
-    if (!window.location.pathname.startsWith(projectPath)) return;
-
-    const goHome = findGoHomeControl();
-    if (!goHome) return;
-
-    routeCorrected = true;
-    goHome.click();
-
-    window.setTimeout(() => {
-      window.history.replaceState(
-        window.history.state,
-        '',
-        projectPath + window.location.hash
-      );
-    }, 500);
+  function restoreProjectUrl() {
+    if (!window.__PORTFOLIO_PROJECT_PATH__) return;
+    if (window.location.pathname !== '/') return;
+    window.history.replaceState(
+      window.history.state,
+      '',
+      projectPath + window.location.search + window.location.hash
+    );
   }
 
   function applyEverything() {
     applyTextChanges();
-    correctInitialRoute();
+    removeManusBadge();
   }
 
   function start() {
     applyEverything();
+
     const observer = new MutationObserver(applyEverything);
     observer.observe(document.body, { childList: true, subtree: true });
-    window.setTimeout(() => observer.disconnect(), 20000);
+
+    window.setTimeout(restoreProjectUrl, 1200);
+    window.setTimeout(applyEverything, 1600);
+    window.setTimeout(() => observer.disconnect(), 30000);
   }
 
   if (document.readyState === 'loading') {
