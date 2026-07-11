@@ -1,0 +1,41 @@
+name: Actualizar enlace del portafolio
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-readme-portfolio.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Reemplazar enlace anterior
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('README.md')
+          text = path.read_text(encoding='utf-8')
+          old = '* 🌐 **Portafolio:** [nassimfolio-tlkpkfh4.manus.space](https://nassimfolio-tlkpkfh4.manus.space/#contacto)'
+          new = '* 🌐 **Portafolio:** [nass10000.github.io/Nass10000](https://nass10000.github.io/Nass10000/)'
+          if old in text:
+              text = text.replace(old, new)
+          elif new not in text:
+              text += '\n' + new + '\n'
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Guardar cambio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git diff --cached --quiet || git commit -m "Actualizar enlace del portafolio"
+          git push
